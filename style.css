@@ -1,0 +1,131 @@
+/* Общие стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ececec, #ffffff);
+  color: #333;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  width: 90%;
+  max-width: 1200px;
+}
+
+/* Стили колонок */
+.column {
+  flex: 1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+  padding: 10px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.column-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 15px;
+  font-size: 1.2rem;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.task-list {
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Цвета колонок */
+.goals {
+  background: rgba(255, 221, 51, 0.8); /* Желтый */
+  border: 2px solid #ffd700;
+}
+
+.work {
+  background: rgba(255, 99, 71, 0.8); /* Красный */
+  border: 2px solid #ff4500;
+}
+
+.complete {
+  background: rgba(50, 205, 50, 0.8); /* Зеленый */
+  border: 2px solid #008000;
+}
+
+/* Стили задачи */
+.task {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+
+.task:active {
+  transform: scale(1.05);
+}
+
+/* Добавление задачи */
+.addtask {
+  display: flex;
+  padding: 10px;
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.addtask input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.addtask button {
+  padding: 8px 12px;
+  margin-left: 5px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.addtask button:hover {
+  background: #444;
+}
+
+/* Подсветка при наведении */
+.column:hover {
+  filter: brightness(1.1);
+}
+
+.column.drag-over {
+  background: rgba(0, 255, 255, 0.3) !important; /* Подсветка при переносе */
+  border: 2px dashed #00ced1;
+}
+.dimmed {
+  filter: brightness(0.5); /* Затемнение колонки */
+  transition: filter 0.3s ease;
+}
+
+
+.drag-over {
+  filter: brightness(1.2); /* Подсветка, когда таск над колонкой */
+}
