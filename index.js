@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.colorClass = colorClass;
             this.tasks = [];
             this.render(title);
-            this.loadTasks(); // Загружаем сохраненные задачи
+            this.loadTasks();
         }
 
         render(title) {
@@ -20,9 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <ul class="task-list"></ul>
                 <form class="addtask" id="${this.inputId}">
-                    <input type="text" placeholder="Добавить задачу...">
-                    <button type="submit">Добавить</button>
+                    <input type="text" placeholder="Додати задачу...">
+                    <button type="submit">Додати</button>
                 </form>`;
+
             document.querySelector('.container').appendChild(this.element);
 
             this.taskList = this.element.querySelector('.task-list');
@@ -42,19 +43,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         addTask(text) {
-            if (!text.trim()) return;
+            if (!text.trim() || this.taskExits(text)) return;
 
             const task = document.createElement('li');
             task.draggable = true;
             task.classList.add('task');
             task.innerHTML = `<h4 class="task-name">${text} <span class="avatar"></span></h4>`;
 
+            task.addEventListener('dblclick', () => {
+                task.remove();
+                this.tasks = this.tasks.filter(t => t !== text);
+                this.saveTasks();
+            });
+
             task.addEventListener('dragstart', (e) => this.onDragStart(e, task));
             task.addEventListener('dragend', (e) => this.onDragEnd(e));
 
             this.taskList.appendChild(task);
-            this.tasks.push(text); // Добавляем задачу в массив
-            this.saveTasks(); // Сохраняем в localStorage
+            this.tasks.push(text);
+            this.saveTasks();
+        }
+        
+        taskExits(text){
+            return Array.from(document.querySelectorAll('.task')).some(task => task.querySelector('.task-name').textContent.trim() === text)
         }
 
         saveTasks() {
@@ -68,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         onDragStart(event, task) {
             event.dataTransfer.setData('text/plain', this.name);
-            event.dataTransfer.setData('taskHTML', task.outerHTML);
+            event.dataTransfer.setData('taskText', task.querySelector('.task-name').textContent.trim());
             event.target.classList.add('dragging');
         }
 
@@ -89,24 +100,28 @@ document.addEventListener('DOMContentLoaded', () => {
             this.element.style.filter = '';
             this.element.style.transition = '';
 
+            const taskText = event.dataTransfer.getData('taskText');
+            if (!taskText) return;
+
             const draggedElement = document.querySelector('.dragging');
             if (draggedElement) {
                 this.taskList.appendChild(draggedElement);
                 draggedElement.classList.remove('dragging');
 
-                // Перемещаем задачу между колонками
                 const fromColumn = event.dataTransfer.getData('text/plain');
-                const taskText = draggedElement.querySelector('.task-name').textContent.trim();
+
                 if (fromColumn !== this.name) {
-                    // Удаляем из старого списка
                     let fromTasks = JSON.parse(localStorage.getItem(fromColumn)) || [];
                     fromTasks = fromTasks.filter(t => t !== taskText);
                     localStorage.setItem(fromColumn, JSON.stringify(fromTasks));
 
-                    // Добавляем в новый список
                     this.tasks.push(taskText);
-                    this.saveTasks();
                 }
+
+                this.tasks = Array.from(this.taskList.querySelectorAll('.task')).map(task =>
+                    task.querySelector('.task-name').textContent.trim()
+                );
+                this.saveTasks();
             }
         }
 
@@ -125,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const columns = [
-        new Column('goals', 'В планах', 'goals'),
-        new Column('work', 'В работе', 'work'),
+        new Column('goals', 'У планах', 'goals'),
+        new Column('work', 'В роботі', 'work'),
         new Column('complete', 'Завершено', 'complete'),
     ];
 });
